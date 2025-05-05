@@ -20,7 +20,7 @@ finish:
 
 ; str_len (esi=address)
 str_len:
-	push ebp              ; prolog
+	push ebp              ; prologue
 	mov ebp, esp
 	xor eax, eax          ; zero EAX
 .loop:
@@ -29,6 +29,6 @@ str_len:
 	inc eax               ; increment length counter
 	jmp .loop
 .quit:
-	mov esp, ebp          ; epilog
+	mov esp, ebp          ; epilogue
 	pop ebp
 	ret
