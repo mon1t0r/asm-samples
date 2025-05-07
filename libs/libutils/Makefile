@@ -1,11 +1,9 @@
 CC:=nasm
-LD:=ld
+AR:=ar
 CFLAGS:=-f elf32 -g -F dwarf
-LDFLAGS:=-m elf_i386
+ARFLAGS:=rcs
 
-TARGET:=arg_len
-
-LOCAL_LIBS:=../libs/libutils/libutils.a
+TARGET:=libutils.a
 
 SRCDIR:=src
 OBJDIR:=obj
@@ -16,19 +14,16 @@ OBJS:=$(SRCS:$(SRCDIR)/%.asm=$(OBJDIR)/%.o)
 rm:=rm -rf
 mkdir:=mkdir -p
 
-.PHONY: all clean $(LOCAL_LIBS)
+.PHONY: all clean
 
 all: $(TARGET)
 
-$(TARGET): $(OBJS) $(LOCAL_LIBS)
-	$(LD) $(LDFLAGS) -o $@ $^
+$(TARGET): $(OBJS)
+	$(AR) $(ARFLAGS) -o $@ $^
 
 $(OBJDIR)/%.o : $(SRCDIR)/%.asm
 	@$(mkdir) $(@D)
 	$(CC) $(CFLAGS) -o $@ $^
-
-$(LOCAL_LIBS):
-	$(MAKE) -C $(dir $@) $(notdir $@)
 
 clean:
 	@$(rm) $(OBJDIR) $(TARGET)
