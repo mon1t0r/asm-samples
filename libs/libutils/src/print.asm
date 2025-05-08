@@ -1,5 +1,7 @@
 global str_len
 global print_u
+global print_s
+global print_c
 
 ; str_len (char_ptr)
 str_len:
@@ -52,6 +54,41 @@ print_u:
 	int 0x80
 
 	pop ebx
+	mov esp, ebp         ; epilogue
+	pop ebp
+	ret
+
+; print_s (char_ptr)
+print_s:
+	push ebp             ; prologue
+	mov ebp, esp
+
+	mov eax, [ebp+8]     ; move string pointer to EAX
+	push eax             ; push string pointer as argument
+	call str_len
+	add esp, 4           ; cleanup after call
+
+	mov edx, eax         ; string length
+	mov eax, 4           ; SYS_WRITE
+	mov ebx, 1           ; write to stdout
+	mov ecx, [ebp+8]     ; string pointer
+	int 0x80
+
+	mov esp, ebp         ; epilogue
+	pop ebp
+	ret
+
+; print_c (char_val)
+print_c:
+	push ebp             ; prologue
+	mov ebp, esp
+
+	mov eax, 4           ; SYS_WRITE
+	mov ebx, 1           ; write to stdout
+	lea ecx, [ebp+8]     ; string pointer
+	mov edx, 1           ; string length
+	int 0x80
+	
 	mov esp, ebp         ; epilogue
 	pop ebp
 	ret

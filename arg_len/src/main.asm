@@ -18,12 +18,11 @@ _start:
 	call str_len
 	add esp, 4            ; clear stack after call
 	
-.print
+.print:
 	push eax              ; push arg1 length onto stack
 	call print_u
 	add esp, 4            ; clear stack after call
 
-	xor ebx, ebx          ; set exit code to 0
-
+	xor ebx, ebx          ; exit code 0
 	mov eax, 1            ; SYS_EXIT
 	int 0x80
