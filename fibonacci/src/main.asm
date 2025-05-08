@@ -4,6 +4,8 @@ extern print_u
 extern print_s
 extern print_c
 
+extern sscan_u
+
 section .rodata
 	delim db ", ", 0
 
@@ -11,7 +13,18 @@ section .text
 _start:
 	mov ebp, esp         ; init EBP
 
-	mov ecx, 10          ; nums count
+	mov eax, [ebp]       ; argc
+	cmp eax, 2           ; if argc is less than 2, jump to .end
+	jl .end
+
+	push dword [ebp+8]   ; arg1
+	call sscan_u
+	add esp, 4           ; cleanup after call
+
+	test eax, eax        ; if numbers count is 0, jump to .end
+	jz .end
+
+	mov ecx, eax         ; numbers count
 	mov eax, 1           ; cur val
 	xor ebx, ebx         ; prev val
 
@@ -43,6 +56,7 @@ _start:
 	call print_c
 	add esp, 1           ; cleanup after call
 
+.end:
 	xor ebx, ebx         ; exit code 0
 	mov eax, 1           ; SYS_EXIT
 	int 0x80
