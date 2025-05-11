@@ -1,2 +1,3 @@
 # Main executable
-arg_len
+release/arg_len
+debug/arg_len

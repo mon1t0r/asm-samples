@@ -1,2 +1,3 @@
 # Main executable
-arg_cmp
+release/arg_cmp
+debug/arg_cmp

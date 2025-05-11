@@ -1,35 +1,74 @@
+# Assembler configuration
 CC:=nasm
+CFLAGS:=-f elf32
+
+# Linker configuration
 LD:=ld
-CFLAGS:=-f elf32 -g -F dwarf
 LDFLAGS:=-m elf_i386
 
-TARGET:=arg_cmp
+# Local libraries configuration
+RELLIBS:=
+DBGLIBS:=
 
-LOCAL_LIBS:=
+# Target file name
+TARGET:=arg_len
 
+# Source and object files configuration
 SRCDIR:=src
 OBJDIR:=obj
 
 SRCS:=$(wildcard $(SRCDIR)/*.asm) $(wildcard $(SRCDIR)/*/*.asm)
 OBJS:=$(SRCS:$(SRCDIR)/%.asm=$(OBJDIR)/%.o)
 
+# Release configuration
+RELDIR:=release
+RELTARGET:=$(RELDIR)/$(TARGET)
+RELOBJS:=$(addprefix $(RELDIR)/, $(OBJS))
+RELCFLAGS:=
+
+# Debug configuration
+DBGDIR:=debug
+DBGTARGET:=$(DBGDIR)/$(TARGET)
+DBGOBJS:=$(addprefix $(DBGDIR)/, $(OBJS))
+DBGCFLAGS:=-g -F dwarf
+
+# Utility commands
 rm:=rm -rf
 mkdir:=mkdir -p
 
-.PHONY: all clean $(LOCAL_LIBS)
+.PHONY: all clean debug release $(RELLIBS) $(DBGLIBS)
 
-all: $(TARGET)
+all: release
 
-$(TARGET): $(OBJS) $(LOCAL_LIBS)
+# Release rules
+release: $(RELTARGET)
+
+$(RELTARGET): $(RELOBJS) $(RELLIBS)
 	$(LD) $(LDFLAGS) -o $@ $^
 
-$(OBJDIR)/%.o : $(SRCDIR)/%.asm
+$(RELDIR)/$(OBJDIR)/%.o : $(SRCDIR)/%.asm
 	@$(mkdir) $(@D)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) $(RELCFLAGS) -o $@ $^
 
-$(LOCAL_LIBS):
-	$(MAKE) -C $(dir $@) $(notdir $@)
+# Debug rules
+debug: $(DBGTARGET)
 
+$(DBGTARGET): $(DBGOBJS) $(DBGLIBS)
+	$(LD) $(LDFLAGS) -o $@ $^
+
+$(DBGDIR)/$(OBJDIR)/%.o : $(SRCDIR)/%.asm
+	@$(mkdir) $(@D)
+	$(CC) $(CFLAGS) $(DBGCFLAGS) -o $@ $^
+
+# Local libraries rules
+$(RELLIBS):
+	$(MAKE) -C $(dir $(patsubst %/,%,$(dir $@))) \
+		$(addprefix $(notdir $(patsubst %/,%,$(dir $@)))/, $(notdir $@))
+$(DBGLIBS):
+	$(MAKE) -C $(dir $(patsubst %/,%,$(dir $@))) \
+		$(addprefix $(notdir $(patsubst %/,%,$(dir $@)))/, $(notdir $@))
+
+# Other rules
 clean:
-	@$(rm) $(OBJDIR) $(TARGET)
+	@$(rm) $(DBGDIR) $(RELDIR)
 
