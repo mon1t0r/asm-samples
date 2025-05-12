@@ -13,8 +13,7 @@ section .text
 _start:
 	mov ebp, esp         ; init EBP
 
-	mov eax, [ebp]       ; argc
-	cmp eax, 2           ; if argc is less than 2, jump to .end
+	cmp dword [ebp], 2   ; if argc is less than 2, jump to .end
 	jl .end
 
 	push dword [ebp+8]   ; arg1
@@ -39,7 +38,7 @@ _start:
 	push eax             ; set print number from EAX & save EAX
 	call print_u
 
-	cmp [esp+8], dword 1 ; do not print delim at last iteration ([esp+8]=ECX)
+	cmp dword [esp+8], 1 ; do not print delim at last iteration ([esp+8]=ECX)
 	je .after_delim
 
 	push delim           ; set print str to delim

@@ -11,7 +11,7 @@ RELLIBS:=
 DBGLIBS:=
 
 # Target file name
-TARGET:=arg_len
+TARGET:=arg_cmp
 
 # Source and object files configuration
 SRCDIR:=src

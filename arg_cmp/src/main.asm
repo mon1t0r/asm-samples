@@ -11,8 +11,7 @@ section .text
 _start:
 	mov ebp, esp              ; init EBP
 
-	mov eax, [ebp]            ; argc
-	cmp eax, 2                ; if argc is greater than 2
+	cmp dword [ebp], 2        ; if argc is greater than 2
 	jg .start
 	jmp .end
 
