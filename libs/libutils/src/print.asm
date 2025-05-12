@@ -15,7 +15,7 @@ str_len:
 	mov edx, eax          ; move string pointer to EDX
 
 .loop:
-	cmp [eax], byte 0     ; compare character to 0
+	cmp byte [eax], 0     ; compare character to 0
 	jz .quit              ; quit if end of string reached
 	inc eax               ; increment length counter
 	jmp .loop
@@ -42,8 +42,8 @@ print_u:
 	xor edx, edx          ; EDX - division divident HIGHER, division remainder
 	div ebx               ; divide value
 
-	add edx, '0'          ; convert digit to ASCII sym in EDX
-	mov [ecx], dl         ; write ASCII sym to string pos (always < 255)
+	add dl, '0'           ; convert digit to ASCII sym in DL (always < 255)
+	mov [ecx], dl         ; write ASCII sym to string pos
 	dec ecx               ; decrement string pos (writing in reverse order)
 
 	test eax, eax         ; test if result is 0
@@ -114,11 +114,11 @@ sscan_u:
 	xor edx, edx          ; EDX - temp for chars (only DL is used)
 
 	cmp byte [ecx], 0     ; string has length 0 - first byte is 0
-	jz .ret0
+	jz .ret_zero
 
 .loop:
 	mul ebx               ; multiply EAX (result) by EBX (multiplier)
-	jo .ret0              ; overflow
+	jo .ret_zero          ; overflow
 
 	mov dl, [ecx]         ; move char value to DL
 	add eax, edx          ; add char value to EAX
@@ -129,7 +129,7 @@ sscan_u:
 	jnz .loop
 	jmp .ret
 
-.ret0:
+.ret_zero:
 	xor eax, eax          ; zero result
 
 .ret:

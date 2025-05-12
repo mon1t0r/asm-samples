@@ -84,7 +84,7 @@ _start:
 ; End section
 
 .end_print:
-	push 10              ; \n character
+	push byte 10         ; \n character
 	call print_c
 	add esp, 1           ; cleanup after call
 
