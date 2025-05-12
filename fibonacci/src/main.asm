@@ -33,12 +33,13 @@ _start:
 	mov ebx, edx         ; move temp to prev val
 	
 	push ecx             ; save ECX
-	push ebx             ; save EBX
+	push eax             ; save EAX
 
-	push eax             ; set print number from EAX & save EAX
+	push eax             ; set print number from EAX
 	call print_u
+	add esp, 4           ; cleanup after call
 
-	cmp dword [esp+8], 1 ; do not print delim at last iteration ([esp+8]=ECX)
+	cmp dword [esp+4], 1 ; do not print delim at last iteration ([esp+4]=ECX)
 	je .after_delim
 
 	push delim           ; set print str to delim
@@ -46,8 +47,7 @@ _start:
 	add esp, 4           ; cleanup after call
 .after_delim:
 
-	pop eax              ; restore EAX & cleanup after call print_u
-	pop ebx              ; restore EBX
+	pop eax              ; restore EAX
 	pop ecx              ; restore ECX
 	loop .loop
 

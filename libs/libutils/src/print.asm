@@ -56,8 +56,10 @@ print_u:
 	inc ecx               ; increment string pos (to point at actual start)
 	int 0x80
 
-	pop ebx
-	mov esp, ebp          ; epilogue
+	add esp, 10           ; cleanup local variables
+
+	pop ebx               ; epilogue
+	mov esp, ebp
 	pop ebp
 	ret
 
@@ -65,6 +67,7 @@ print_u:
 print_s:
 	push ebp              ; prologue
 	mov ebp, esp
+	push ebx
 
 	push dword [ebp+8]    ; push string pointer as argument
 	call str_len
@@ -76,7 +79,8 @@ print_s:
 	mov ecx, [ebp+8]      ; string pointer
 	int 0x80
 
-	mov esp, ebp          ; epilogue
+	pop ebx               ; epilogue
+	mov esp, ebp
 	pop ebp
 	ret
 
@@ -84,6 +88,7 @@ print_s:
 print_c:
 	push ebp              ; prologue
 	mov ebp, esp
+	push ebx
 
 	mov eax, 4            ; SYS_WRITE
 	mov ebx, 1            ; write to stdout
@@ -91,7 +96,8 @@ print_c:
 	mov edx, 1            ; string length
 	int 0x80
 	
-	mov esp, ebp          ; epilogue
+	pop ebx               ; epilogue
+	mov esp, ebp
 	pop ebp
 	ret
 
