@@ -7,11 +7,11 @@ LD:=ld
 LDFLAGS:=-m elf_i386
 
 # Local libraries configuration
-RELLIBS:=../libs/libutils/release/libutils.a
-DBGLIBS:=../libs/libutils/debug/libutils.a
+RELLIBS:=
+DBGLIBS:=
 
 # Target file name
-TARGET:=fibonacci
+TARGET:=copy
 
 # Source and object files configuration
 SRCDIR:=src
