@@ -1,3 +1,5 @@
+%include "kernel.inc"
+
 global _start
 
 extern print_u
@@ -89,6 +91,4 @@ _start:
 	add esp, 1           ; cleanup after call
 
 .end:
-	xor ebx, ebx         ; exit code 0
-	mov eax, 1           ; SYS_EXIT
-	int 0x80
+    kernel 1, 0          ; SYS_EXIT
