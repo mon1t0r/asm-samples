@@ -1,3 +1,5 @@
+%include "kernel.inc"
+
 global _start
 
 extern str_len
@@ -28,6 +30,6 @@ _start:
 	call print_c
 	add esp, 1            ; cleanup after call
 
-	xor ebx, ebx          ; exit code 0
-	mov eax, 1            ; SYS_EXIT
-	int 0x80
+
+; SYS_EXIT, exit code
+	kernel 1, 0

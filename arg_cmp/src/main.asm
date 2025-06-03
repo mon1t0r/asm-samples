@@ -1,3 +1,5 @@
+%include "kernel.inc"
+
 global _start
 
 section .rodata
@@ -38,11 +40,9 @@ _start:
 	mov ecx, msg_str_diff     ; string pointer
 
 .end_write:
-	mov eax, 4                ; SYS_WRITE
-	mov ebx, 1                ; write to stdout
-	int 0x80
+; SYS_WRITE, stdout
+	kernel 4, 1
 
 .end:
-	xor ebx, ebx              ; exit code 0
-	mov eax, 1                ; SYS_EXIT
-	int 0x80
+; SYS_EXIT, exit code
+	kernel 1, 0

@@ -91,4 +91,5 @@ _start:
 	add esp, 1           ; cleanup after call
 
 .end:
-    kernel 1, 0          ; SYS_EXIT
+; SYS_EXIT, exit code
+    kernel 1, 0
