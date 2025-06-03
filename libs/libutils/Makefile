@@ -1,6 +1,6 @@
 # Assembler configuration
 CC:=nasm
-CFLAGS:=-I../../inc/ -f elf32
+CFLAGS:=-f elf32
 
 # ar configuration
 AR:=ar
