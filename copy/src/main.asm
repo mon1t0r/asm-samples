@@ -3,10 +3,10 @@
 global _start
 
 section .bss
-    buf     resb 4096
-    buf_len equ  $-buf
-    src_fd  resd 1
-    dst_fd  resd 1
+	buf     resb 4096
+	buf_len equ  $-buf
+	src_fd  resd 1
+	dst_fd  resd 1
 
 section .rodata
 	msg_err_params         db "Usage: ./copy <src_filename> <dst_filename>", 10
