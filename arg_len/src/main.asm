@@ -1,10 +1,8 @@
 %include "kernel.inc"
+%include "string.inc"
+%include "print.inc"
 
 global _start
-
-extern str_len
-extern print_u
-extern print_c
 
 section .text
 _start:

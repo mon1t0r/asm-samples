@@ -1,6 +1,6 @@
 # Assembler configuration
 CC:=nasm
-CFLAGS:=-I../include/ -f elf32
+CFLAGS:=-I../inc/ -f elf32
 
 # Linker configuration
 LD:=ld

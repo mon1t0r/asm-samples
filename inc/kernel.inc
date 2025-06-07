@@ -1,7 +1,7 @@
+; kernel (syscall_num, syscall_params...)
 ; generic Linux system call, follows CDECL convention
-; first param - system call number, other - system call parameters
-; on success EAX contains system call return value, ECX - 0
-; on failure EAX contains -1, ECX - error code
+; on success: EAX = system call return value; ECX = 0
+; on failure: EAX = -1, ECX = error code
 %macro kernel 1-*
 
 ; save registers depending on parameters count

@@ -1,0 +1,1 @@
+extern str_len

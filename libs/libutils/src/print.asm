@@ -1,30 +1,8 @@
-global str_len
+%include "string.inc"
 
 global print_u
 global print_s
 global print_c
-
-global sscan_u
-
-; str_len (char_ptr)
-str_len:
-	push ebp              ; prologue
-	mov ebp, esp
-
-	mov eax, [ebp+8]      ; move string pointer to EAX
-	mov edx, eax          ; move string pointer to EDX
-
-.loop:
-	cmp byte [eax], 0     ; compare character to 0
-	jz .quit              ; quit if end of string reached
-	inc eax               ; increment length counter
-	jmp .loop
-
-.quit:
-	sub eax, edx          ; subtract start pointer from end pointer
-	mov esp, ebp          ; epilogue
-	pop ebp
-	ret
 
 ; print_u (uint_val)
 print_u:
@@ -101,40 +79,3 @@ print_c:
 	pop ebp
 	ret
 
-; sscan_u (char_ptr)
-sscan_u:
-	push ebp              ; prologue
-	mov ebp, esp
-	push ebx
-	push edx
-
-	xor eax, eax          ; EAX - result
-	mov ebx, 10           ; EBX - multiplier
-	mov ecx, [ebp+8]      ; ECX - string pos address
-	xor edx, edx          ; EDX - temp for chars (only DL is used)
-
-	cmp byte [ecx], 0     ; string has length 0 - first byte is 0
-	jz .ret_zero
-
-.loop:
-	mul ebx               ; multiply EAX (result) by EBX (multiplier)
-	jo .ret_zero          ; overflow
-
-	mov dl, [ecx]         ; move char value to DL
-	add eax, edx          ; add char value to EAX
-	sub eax, '0'          ; subtract ascii '0'
-
-	inc ecx               ; increment string pos address
-	cmp byte [ecx], 0     ; end of string - cur byte is 0
-	jnz .loop
-	jmp .ret
-
-.ret_zero:
-	xor eax, eax          ; zero result
-
-.ret:
-	pop edx               ; epilogue
-	pop ebx
-	mov esp, ebp
-	pop ebp
-	ret

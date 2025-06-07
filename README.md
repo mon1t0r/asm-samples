@@ -4,7 +4,7 @@ language with Intel syntax for Linux.
 
 ## Projects
 ### arg_len
-Takes one argument and determines its legth. Depends on `libs/libutils`.
+Takes one argument and determines its length. Depends on `libs/libutils`.
 
 Usage: `./arg_len <arg>`.
 
@@ -30,6 +30,8 @@ Library project, which contains miscellaneous utilities.
 ### Requirements
 ```
 nasm
+ld
+ar
 make
 ```
 

@@ -1,12 +1,8 @@
 %include "kernel.inc"
+%include "print.inc"
+%include "scan.inc"
 
 global _start
-
-extern print_u
-extern print_s
-extern print_c
-
-extern sscan_u
 
 section .rodata
 	delim db ", ", 0
