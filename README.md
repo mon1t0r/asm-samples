@@ -23,6 +23,15 @@ Copies file from source to destination.
 
 Usage: `./copy <src_filename> <dst_filename>`.
 
+### radinfo
+Calculates circle area, sphere surface and sphere volume from radius.
+
+Radius must be specified as single precision floating point IEEE-754 number
+in `hexadecimal` form (e.g. `42f60000`). Useful web page for conversion between
+decimal and IEEE-754: https://www.h-schmidt.net/FloatConverter/IEEE754.html.
+
+Usage: `./radinfo <radius>`.
+
 ### libs/libutils
 Library project, which contains miscellaneous utilities.
 
