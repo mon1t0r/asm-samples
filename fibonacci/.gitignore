@@ -1,3 +1,2 @@
-# Main executable
-release/fibonacci
-debug/fibonacci
+release/
+debug/
