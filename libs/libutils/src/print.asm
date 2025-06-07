@@ -1,6 +1,7 @@
 %include "string.inc"
 
 global print_u
+global print_x
 global print_s
 global print_c
 
@@ -13,7 +14,7 @@ print_u:
 	sub esp, 10           ; allocate space for string (max 10 chars for uint)
 
 	mov eax, [ebp+8]      ; EAX - division divident LOWER
-	mov ebx, 10           ; EBX - division denominator
+	mov ebx, 10           ; EBX - division denominator (base 10)
 	lea ecx, [ebp-5]      ; ECX - start string pos address
 
 .loop:
@@ -21,6 +22,51 @@ print_u:
 	div ebx               ; divide value
 
 	add dl, '0'           ; convert digit to ASCII sym in DL (always < 255)
+	mov [ecx], dl         ; write ASCII sym to string pos
+	dec ecx               ; decrement string pos (writing in reverse order)
+
+	test eax, eax         ; test if result is 0
+	jnz .loop
+
+	mov eax, 4            ; SYS_WRITE
+	mov ebx, 1            ; write to stdout
+	lea edx, [ebp-5]      ; load start string address
+	sub edx, ecx          ; subtract end string pos address (result=length)
+	inc ecx               ; increment string pos (to point at actual start)
+	int 0x80
+
+	add esp, 10           ; cleanup local variables
+
+	pop ebx               ; epilogue
+	mov esp, ebp
+	pop ebp
+	ret
+
+; print_x (uint_val)
+print_x:
+	push ebp              ; prologue
+	mov ebp, esp
+	push ebx
+
+	sub esp, 8            ; allocate space for string (max 8 chars for uint)
+
+	mov eax, [ebp+8]      ; EAX - division divident LOWER
+	mov ebx, 16           ; EBX - division denominator (base 16)
+	lea ecx, [ebp-5]      ; ECX - start string pos address
+
+.loop:
+	xor edx, edx          ; EDX - division divident HIGHER, division remainder
+	div ebx               ; divide value
+
+	cmp dl, 9             ; if digit is greater than 9, jump
+	jg .digit_is_char
+
+	add dl, '0'           ; add ascii '0'
+	jmp .write_sym
+.digit_is_char:
+	add dl, ('a'-10)      ; add ascii 'a' and subtract 10
+
+.write_sym:
 	mov [ecx], dl         ; write ASCII sym to string pos
 	dec ecx               ; decrement string pos (writing in reverse order)
 
