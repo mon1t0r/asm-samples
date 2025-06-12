@@ -3,21 +3,23 @@
 global _start
 
 section .rodata
-	msg_str_eq       db "arg1 is equal to arg2", 10
-	msg_str_eq_len   equ $-msg_str_eq
-
-	msg_str_diff     db "arg1 is NOT equal to arg2", 10
-	msg_str_diff_len equ $-msg_str_diff
+	mep   db "Usage: ./arg_cmp <arg1> <arg2>", 10
+	mepl  equ $-mep
+	mse   db "arg1 is equal to arg2", 10
+	msel  equ $-mse
+	msne  db "arg1 is NOT equal to arg2", 10
+	msnel equ $-msne
 
 section .text
 _start:
 	mov ebp, esp              ; init EBP
 
-	cmp dword [ebp], 2        ; if argc is greater than 2
-	jg .start
-	jmp .end
+	cmp dword [ebp], 3        ; if argc is equal to 3, jump
+	je .begin
+	kernel 4, 2, mep, mepl    ; SYS_WRITE, stdout, message, message length
+	kernel 1, 1               ; SYS_EXIT, exit code
 
-.start:
+.begin:
 	mov esi, [ebp+8]          ; move arg1 string pointer to ESI
 	mov edi, [ebp+12]         ; move arg2 string pointer to EDI
 
@@ -31,18 +33,15 @@ _start:
 	jmp .loop                 ; continue loop otherwise
 
 .end_eq:
-	mov edx, msg_str_eq_len   ; string length
-	mov ecx, msg_str_eq       ; string pointer
-	jmp .end_write
+	mov edx, msel             ; message length
+	mov ecx, mse              ; message pointer
+	jmp .end
 
 .end_diff:
-	mov edx, msg_str_diff_len ; string length
-	mov ecx, msg_str_diff     ; string pointer
-
-.end_write:
-; SYS_WRITE, stdout
-	kernel 4, 1
+	mov edx, msnel            ; message length
+	mov ecx, msne             ; message pointer
 
 .end:
-; SYS_EXIT, exit code
-	kernel 1, 0
+	kernel 4, 1 ; SYS_WRITE, stdout
+
+	kernel 1, 0 ; SYS_EXIT, exit code

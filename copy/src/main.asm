@@ -20,8 +20,8 @@ section .text
 _start:
 	mov ebp, esp                ; init EBP
 
-	cmp dword [ebp], 2          ; if argc is greater than 2, jump to begin
-	jg .begin
+	cmp dword [ebp], 3          ; if argc is equal to 3, jump
+	je .begin
 	kernel 4, 2, mep, mepl      ; SYS_WRITE, stdout, message, message length
 	kernel 1, 1                 ; SYS_EXIT, exit code
 

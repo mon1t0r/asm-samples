@@ -13,14 +13,16 @@ section .rodata
 	mssl equ $-mss
 	msv  db "Sphere volume: "
 	msvl equ $-msv
+	nl   db 10
+	nll  equ $-nl
 
 section .text
 _start:
 	mov ebp, esp           ; init EBP
 	sub esp, 8             ; allocate space for local variables
 
-	cmp dword [ebp], 1     ; if argc is greater than 1, jump to .begin
-	jg .begin
+	cmp dword [ebp], 2     ; if argc is equal to 2, jump
+	je .begin
 	kernel 4, 2, mep, mepl ; SYS_WRITE, stdout, message, message length
 	kernel 1, 1            ; SYS_EXIT, exit code
 
@@ -84,9 +86,7 @@ print_result:
 	call print_x
 	add esp, 4             ; cleanup after call
 
-	push dword 10          ; pass '\n' character as subroutine argument
-	call print_c
-	add esp, 4             ; cleanup after call
+	kernel 4, 2, nl, nll   ; print \n
 
 	mov esp, ebp           ; epilogue
 	pop ebp

@@ -1,10 +1,11 @@
 ## Overview
 This educational project contains miscellaneous examples in x86 NASM Assembly
-language with Intel syntax for Linux.
+language with Intel syntax for Linux, which were written while learning
+assembly language.
 
 ## Projects
 ### arg_len
-Takes one argument and determines its length. Depends on `libs/libutils`.
+Takes one argument and determines its length. Depends on `libutils`.
 
 Usage: `./arg_len <arg>`.
 
@@ -14,7 +15,7 @@ Takes two arguments and determines, if they are equal.
 Usage: `./arg_cmp <arg1> <arg2>`.
 
 ### fibonacci
-Prints fibonacci number sequence of desired length. Depends on `libs/libutils`.
+Prints fibonacci number sequence of desired length. Depends on `libutils`.
 
 Usage: `./fibonacci <count>`.
 
@@ -24,9 +25,10 @@ Copies file from source to destination.
 Usage: `./copy <src_filename> <dst_filename>`.
 
 ### radinfo
-Calculates circle area, sphere surface and sphere volume from radius.
+Calculates circle area, sphere surface and sphere volume from radius. Depends
+on `libutils`.
 
-Radius must be specified as single precision floating point IEEE-754 number
+Radius must be specified as `single precision floating point` IEEE-754 number
 in `hexadecimal` form (e.g. `42f60000`). Useful web page for conversion between
 decimal and IEEE-754: https://www.h-schmidt.net/FloatConverter/IEEE754.html.
 
@@ -55,3 +57,6 @@ make
 ```
 release/<name_of_the_project> [OPTIONS]
 ```
+
+## TODO
+- implement FreeBSD support.
