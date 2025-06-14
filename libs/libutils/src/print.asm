@@ -25,7 +25,7 @@ print_u:
 	mov [ecx], dl         ; write ASCII sym to string pos
 	dec ecx               ; decrement string pos (writing in reverse order)
 
-	test eax, eax         ; test if result is 0
+	test eax, eax         ; test if input value is 0
 	jnz .loop
 
 	mov eax, 4            ; SYS_WRITE
@@ -34,8 +34,6 @@ print_u:
 	sub edx, ecx          ; subtract end string pos address (result=length)
 	inc ecx               ; increment string pos (to point at actual start)
 	int 0x80
-
-	add esp, 10           ; cleanup local variables
 
 	pop ebx               ; epilogue
 	mov esp, ebp
@@ -46,31 +44,21 @@ print_u:
 print_x:
 	push ebp              ; prologue
 	mov ebp, esp
-	push ebx
-
 	sub esp, 8            ; allocate space for string (max 8 chars for uint)
 
-	mov eax, [ebp+8]      ; EAX - division divident LOWER
-	mov ebx, 16           ; EBX - division denominator (base 16)
-	lea ecx, [ebp-5]      ; ECX - start string pos address
+	mov eax, [ebp+8]      ; EAX - input value
+	mov ecx, [ebp-1]      ; ECX - start string pos address
 
 .loop:
-	xor edx, edx          ; EDX - division divident HIGHER, division remainder
-	div ebx               ; divide value
+	or dl, al             ; move lower 8 bits of AL to lower 8 bits of DL
+	and dl, 0xF           ; cut DL to 4 lower bits
+	shr eax, 4            ; shift EAX to right
 
-	cmp dl, 9             ; if digit is greater than 9, jump
-	jg .digit_is_char
-
-	add dl, '0'           ; add ascii '0'
-	jmp .write_sym
-.digit_is_char:
-	add dl, ('a'-10)      ; add ascii 'a' and subtract 10
-
-.write_sym:
+	add dl, '0'           ; convert digit to ASCII sym in DL (always < 255)
 	mov [ecx], dl         ; write ASCII sym to string pos
 	dec ecx               ; decrement string pos (writing in reverse order)
 
-	test eax, eax         ; test if result is 0
+	test eax, eax         ; test if input value is 0
 	jnz .loop
 
 	mov eax, 4            ; SYS_WRITE
@@ -80,10 +68,7 @@ print_x:
 	inc ecx               ; increment string pos (to point at actual start)
 	int 0x80
 
-	add esp, 10           ; cleanup local variables
-
-	pop ebx               ; epilogue
-	mov esp, ebp
+	mov esp, ebp          ; epilogue
 	pop ebp
 	ret
 
