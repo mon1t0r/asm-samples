@@ -28,14 +28,16 @@ Usage: `./copy <src_filename> <dst_filename>`.
 Calculates circle area, sphere surface and sphere volume from radius. Depends
 on `libutils`.
 
-Radius must be specified as `single precision floating point` IEEE-754 number
-in `hexadecimal` form (e.g. `42f60000`). Useful web page for conversion between
-decimal and IEEE-754: https://www.h-schmidt.net/FloatConverter/IEEE754.html.
+Radius must be specified as `double precision floating point IEE-754` number
+in `hexadecimal` form (e.g. `401C000000000000`). Useful web page for conversion
+between decimal and IEEE-754:
+https://baseconvert.com/ieee-754-floating-point.
 
 Usage: `./radinfo <radius>`.
 
 ### libs/libutils
 Library project, which contains miscellaneous utilities.
+Consists of modules: `scan`, `print`, `string`.
 
 ## Build and run
 ### Requirements
