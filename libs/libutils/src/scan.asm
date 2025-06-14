@@ -77,3 +77,53 @@ sscan_x:
 	mov esp, ebp          ; epilogue
 	pop ebp
 	ret
+
+; sscan_lx (char_ptr)
+sscan_lx:
+	push ebp              ; prologue
+	mov ebp, esp
+	sub esp, 8            ; allocate space for result
+
+	mov dword [ebp-8], 0  ; [ebp-8] - result
+	mov dword [ebp-4], 0
+	mov ecx, [ebp+8]      ; ECX - string pos address
+
+	cmp byte [ecx], 0     ; string has length 0 - first byte is 0
+	jz .ret
+
+.loop:
+	mov dl, [ecx]         ; move char value to DL
+
+	cmp dl, 'a'           ; if char value is lowercase character
+	jge .char_is_lower
+	cmp dl, 'A'           ; if char value is uppercase character
+	jge .char_is_upper
+                          ; otherwise char value is digit character
+	sub dl, '0'           ; subtract ascii '0'
+	jmp .loop_end
+.char_is_upper:
+	sub dl, ('A'-10)      ; subtract ascii 'A' and add 10
+	jmp .loop_end
+.char_is_lower:
+	sub dl, ('a'-10)      ; subtract ascii 'a' and add 10
+
+.loop_end:
+	shl dword [ebp-4], 4  ; shift [ebp-4] to left so lower 4 bits are 0
+	mov eax, [ebp-8]      ; move [ebp-8] to EAX
+	shr eax, 28           ; shift EAX to right, so only 4 higher bits are left
+	or [ebp-4], al        ; move lower 4 bits of AL to lower 4 bits of [ebp-4]
+	shl dword [ebp-8], 4  ; shift [ebp-8] to left so lower 4 bits are 0
+
+	and dl, 0xF           ; mask DL to 4 lower bits
+	or [ebp-8], dl        ; move lower 4 bits of DL to lower 4 bits of [ebp-8]
+
+	inc ecx               ; increment string pos address
+	cmp byte [ecx], 0     ; end of string
+	jnz .loop
+
+.ret:
+	mov edx, [ebp-4]      ; first part of the result
+	mov eax, [ebp-8]      ; second part of the result
+	mov esp, ebp          ; epilogue
+	pop ebp
+	ret

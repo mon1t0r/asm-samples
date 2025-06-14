@@ -2,6 +2,7 @@
 
 global print_u
 global print_x
+global print_lx
 global print_s
 global print_c
 
@@ -47,14 +48,22 @@ print_x:
 	sub esp, 8            ; allocate space for string (max 8 chars for uint)
 
 	mov eax, [ebp+8]      ; EAX - input value
-	mov ecx, [ebp-1]      ; ECX - start string pos address
+	lea ecx, [ebp-1]      ; ECX - start string pos address
 
 .loop:
-	or dl, al             ; move lower 8 bits of AL to lower 8 bits of DL
+	mov dl, al            ; move AL to DL
 	and dl, 0xF           ; cut DL to 4 lower bits
 	shr eax, 4            ; shift EAX to right
 
-	add dl, '0'           ; convert digit to ASCII sym in DL (always < 255)
+	cmp dl, 9             ; if digit is greater than 9, jump
+	jg .digit_is_char
+
+	add dl, '0'           ; add ascii '0'
+	jmp .write_sym
+.digit_is_char:
+	add dl, ('a'-10)      ; add ascii 'a' and subtract 10
+
+.write_sym:
 	mov [ecx], dl         ; write ASCII sym to string pos
 	dec ecx               ; decrement string pos (writing in reverse order)
 
@@ -64,6 +73,51 @@ print_x:
 	mov eax, 4            ; SYS_WRITE
 	mov ebx, 1            ; write to stdout
 	lea edx, [ebp-5]      ; load start string address
+	sub edx, ecx          ; subtract end string pos address (result=length)
+	inc ecx               ; increment string pos (to point at actual start)
+	int 0x80
+
+	mov esp, ebp          ; epilogue
+	pop ebp
+	ret
+
+; print_lx (long_uint_val)
+print_lx:
+	push ebp              ; prologue
+	mov ebp, esp
+	sub esp, 16           ; allocate space for string (max 16 chars for long)
+
+	mov eax, [ebp+8]      ; EAX - input value (first part)
+	lea ecx, [ebp-1]      ; ECX - start string pos address
+
+.loop:
+	mov dl, al            ; move AL to DL
+	and dl, 0xF           ; cut DL to 4 lower bits
+	shr eax, 4            ; shift EAX to right
+
+	cmp dl, 9             ; if digit is greater than 9, jump
+	jg .digit_is_char
+
+	add dl, '0'           ; add ascii '0'
+	jmp .write_sym
+.digit_is_char:
+	add dl, ('a'-10)      ; add ascii 'a' and subtract 10
+
+.write_sym:
+	mov [ecx], dl         ; write ASCII sym to string pos
+	dec ecx               ; decrement string pos (writing in reverse order)
+
+	test eax, eax         ; test if input value is 0
+	jnz .loop
+	mov eax, [ebp+12]     ; move second part of input value to EAX
+	mov dword [ebp+12], 0 ; zero second part of input value
+	
+	test eax, eax         ; continue loop if number is not 0
+	jnz .loop
+
+	mov eax, 4            ; SYS_WRITE
+	mov ebx, 1            ; write to stdout
+	lea edx, [ebp-1]      ; load start string address
 	sub edx, ecx          ; subtract end string pos address (result=length)
 	inc ecx               ; increment string pos (to point at actual start)
 	int 0x80
